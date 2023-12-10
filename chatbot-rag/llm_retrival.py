@@ -126,9 +126,7 @@ def generate_rag_chain(retriever: VectorStoreRetriever) -> RunnableSequence:
     Returns:
         RunnableSequence: RAG chain
     """
-
-    # Retrive document from chromaDB
-    retrival = {"context": retriever, "prompt": RunnablePassthrough()}
+   
 
     prompt_template = generate_mistral_prompt()
 
@@ -145,7 +143,14 @@ def generate_rag_chain(retriever: VectorStoreRetriever) -> RunnableSequence:
 
     output_parser = MistralOutputParser()
 
-    # Define the chain of components
-    chain = retrival | prompt_template | model_endpoint | output_parser
+    chain = None
+    # check that retriever is not None
+    if retriever is None:
+        # Define the chain of components
+        chain = prompt_template | model_endpoint | output_parser
+    else:
+        # Retrive document from chromaDB
+        retrival = {"context": retriever, "prompt": RunnablePassthrough()}
+        chain = retrival | prompt_template | model_endpoint | output_parser
 
     return chain
