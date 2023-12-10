@@ -5,6 +5,7 @@ This script is used to generate a RAG chain to answer questions about a pdf docu
 # Author: Bastien Pouessel
 
 import os
+from typing import List
 
 from langchain.document_loaders import UnstructuredPDFLoader
 from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
@@ -14,6 +15,8 @@ from langchain.schema.output_parser import StrOutputParser
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
+from langchain_core.runnables.base import RunnableSequence
+from langchain_core.vectorstores import VectorStoreRetriever
 
 HF_API_KEY = os.environ["HF_API_KEY"]
 
@@ -40,7 +43,7 @@ def load_pdf(
     strategy: str = "fast",
     chunk_size: int = 500,
     chunk_overlap: int = 0,
-):
+) -> List[str]:
     """
     Load a pdf document and split it into chunks of text.
 
@@ -51,6 +54,8 @@ def load_pdf(
         chunk_size (int, optional): size of the chunks. Defaults to 500.
         chunk_overlap (int, optional): overlap of the chunks. Defaults to 0.
 
+    Returns:
+        List[str]: list of chunks of text
     """
 
     # Load the document
@@ -71,12 +76,15 @@ def load_pdf(
     return all_splits
 
 
-def store_vector(all_splits):
+def store_vector(all_splits: List[str]) -> VectorStoreRetriever:
     """
     Store vector of each chunk of text.
 
     Args:
-        all_splits ([type]): All splits of the document
+        all_splits (List[str]): list of chunks of text
+
+    Returns:
+        VectorStoreRetriever: retriever that can be used to retrieve the vector of a chunk of text
     """
 
     # Use the HuggingFace distilbert-base-uncased model to embed the text
@@ -108,15 +116,15 @@ def generate_mistral_prompt() -> ChatPromptTemplate:
     return prompt_template
 
 
-def generate_rag_chain(retriever):
+def generate_rag_chain(retriever: VectorStoreRetriever) -> RunnableSequence:
     """
-    Generate a RAG chain.
+    Generate a RAG chain with Mistral API and ChromaDB.
 
     Args:
-        retriver ([type]): retriever
+        Retriever (VectorStoreRetriever): retriever that can be used to retrieve the vector of a chunk of text
 
     Returns:
-        [type]: RAG chain
+        RunnableSequence: RAG chain
     """
 
     # Retrive document from chromaDB
@@ -141,14 +149,3 @@ def generate_rag_chain(retriever):
     chain = retrival | prompt_template | model_endpoint | output_parser
 
     return chain
-
-
-if __name__ == "__main__":
-    document_path = "data/thesis.pdf"
-    all_splits = load_pdf(document_path)
-    retriever = store_vector(all_splits)
-    chain = generate_rag_chain(retriever)
-
-    response = chain.invoke("What are the names of the supervisors of this thesis?")
-
-    print(response)
