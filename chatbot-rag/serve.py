@@ -19,7 +19,7 @@ app = FastAPI(
     description="API server in order to retrieve information from a document",
 )
 
-app.all_splits = load_pdf("data/thesis.pdf")
+app.all_splits = load_pdf("thesis.pdf")
 app.retriever = store_vector(app.all_splits)
 app.chain = generate_rag_chain(app.retriever)
 
