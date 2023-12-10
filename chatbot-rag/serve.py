@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 from langserve import add_routes
-from llm_retrival import load_pdf, store_vector, generate_rag_chain
-
+from llm_retrival import generate_rag_chain, load_pdf, store_vector
 
 # FastAPI app
 app = FastAPI(
-  title="Document Chatbot",
-  version="0.1",
-  description="API server in order to retrieve information from a document",
+    title="Document Chatbot",
+    version="0.1",
+    description="API server in order to retrieve information from a document",
 )
 
 # Load the document and generate the chain
