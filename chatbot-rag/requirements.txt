@@ -2,4 +2,6 @@ gradio==4.8.0
 langchain==0.0.348
 unstructured[pdf]==0.11.2 
 chromadb==0.4.18
-fastapi==0.104.1 
+fastapi==0.104.1
+langserve[all]==0.0.35
+pydantic==1.10.13
