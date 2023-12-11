@@ -1,25 +1,24 @@
-# Document retrival chabot
+# Document retrival chabot using Mistral 7B
 
-The following project is a proof of concept for a retrieval-augmented chatbot. In this case, it's utilizing the Mistral 7b Instruct model with the Hugging Face prototyping API and includes a Gradio UI for interacting with the model. The pipeline is based on LangChain and supports PDF as a document type. The advantage of retrieval-augmented generation is that it helps reduce model hallucinations.
+The following project serves as a proof of concept for a retrieval-augmented chatbot. This PoC primarily utilizes *langchain* for pipelining and incorporates open-source models from Hugging Face.
 
-I chose LangChain for its simplicity in integrating all the components together and opted to use only models through the API due to computational requirements. DistilBERT was used as the embedding model, while Mistral was used for the language generation part.
+The model that are used are the following one:
+- Embedding model: [Distilbert](https://huggingface.co/distilbert-base-uncased)
+- LLM model: [Mistral 7B Instruct](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
 
-The RAG methodology requires in-memory storage to store document embeddings that have been divided into multiple parts. I selected ChromaDB for its ease of use and the capability to integrate it seamlessly.
+The principle of retrieval augmentation is to enhance the model's output by providing contextual information. In this project, I concentrated on using PDFs for Retrieval-Augmented Generation (RAG). The methodology necessitates in-memory storage for storing document embeddings, which are segmented into several parts. I chose an arbitrary division of 500 characters per embedding. This aspect could be refined by analyzing the model's performance with various hyperparameters. ChromaDB was selected for its user-friendliness and its seamless integration capabilities.
 
 ## Project architecture
 
-The project can be deployed with docker compose and is only composed of parts that are dockerized. The following architecture provide on overview of the project.
+The project is deployable using docker compose, as it is packaged within a single Docker container. Initially, I considered using multiple Docker containers and Langserver, but I opted to keep it simple. This decision was due to the added complexity of transmitting files through the API and the need for additional storage accessible by multiple Docker containers. The following architecture provides an overview of the project.
 
 <p align="center">
   <img src="docs/architecture.png" width="950" height="275">
 </p>
 
-The project is composed of the following parts:
-- gradio-ui: This contains the project's user interface and is deployed using Docker.
-- langserve: This is the core component that houses the logic for RAG and storage. It is stored in the 'chatbot-rag' directory and uses an API provided by LangServe to expose a server for your chain.
-
 ### How to run the project
-The project can be easily run with Docker Compose, but in order to function, a `.env` file must be present alongside the `docker-compose.yml` file with a key for Hugging Face. The format of the environment variable is as follows:"
+
+The project can be easily run with docker Compose, but in order to function, a `.env` file must be present alongside the `docker-compose.yml` file with a key for Hugging Face. The format of the environment variable is as follows:"
 ```bash
 HF_API_KEY=hf_<rest of the key>
 ```
@@ -29,4 +28,6 @@ The following command will execute the docker-compose.yml
 docker compose up -d
 ```
 
-The UI will be available at the following address: `http://localhost:7860/`
+The UI will be available at the following address: `http://localhost:7860/`.
+
+*The file can be passed in additional input section.*
