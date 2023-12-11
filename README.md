@@ -1,4 +1,4 @@
-# Document retrival chabot using Mistral 7B
+# Document retrieval chabot using Mistral 7B
 
 The following project serves as a proof of concept for a retrieval-augmented chatbot. This PoC primarily utilizes *langchain* for pipelining and incorporates open-source models from Hugging Face.
 
