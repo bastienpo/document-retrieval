@@ -16,7 +16,7 @@ The project is deployable using docker compose, as it is packaged within a singl
   <img src="docs/architecture.png" width="950" height="275">
 </p>
 
-### How to run the project
+## How to run the project
 
 The project can be easily run with docker Compose, but in order to function, a `.env` file must be present alongside the `docker-compose.yml` file with a key for Hugging Face. The format of the environment variable is as follows:"
 ```bash
@@ -31,3 +31,32 @@ docker compose up -d
 The UI will be available at the following address: `http://localhost:7860/`.
 
 *The file can be passed in additional input section.*
+
+## Examples
+
+Examples were provided in the `data` directory.
+
+#### Example 1: lecl-langchain.pdf
+
+The LECL is a good way to test the dataset since it is a recent feature.
+
+A good question to ask is:
+- What is LECL ?
+
+#### Example 2: 1706.03762.pdf
+
+The second example is the paper Attention Is All You Need by Google.
+
+Good questions to ask:
+- What BLEU score does the model achieve?
+- What is the composition of the encoder?
+- On what data has the model been trained?
+
+### Limitations
+The project remains a proof of concept (PoC) that offers a straightforward implementation using Langchain, but it has several limitations and areas for improvement. The primary limitation is that embeddings are computed every time a request is made. Ideally, if the files remain unchanged, the embeddings do not need to be recomputed. However, this would require a different design pattern in the file handling logic. Currently, all embeddings are stored in ChromaDB.
+
+### Possible Improvement
+A few potential improvements could be considered:
+- Choosing a type of storage other than in-memory to enable persistence over time.
+- Storing embeddings in a Q&A format could enhance the model's retrieval capabilities.
+- Incorporating conversational history might be advantageous, as it allows for multiple questions to be asked about the same data. However, this would require managing conversation through the user interface.
