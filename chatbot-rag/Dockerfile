@@ -12,6 +12,4 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 80
-
-CMD ["uvicorn", "serve:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["python", "app.py"]
