@@ -149,6 +149,7 @@ def generate_rag_chain(retriever: VectorStoreRetriever = None) -> RunnableSequen
         task="text2text-generation",
     )
 
+    # Use a custom output parser
     output_parser = MistralOutputParser()
 
     # If no retriever is provided, use a simple prompt
@@ -159,4 +160,4 @@ def generate_rag_chain(retriever: VectorStoreRetriever = None) -> RunnableSequen
     # If a retriever is provided, use a RAG prompt
     retrieval = {"context": retriever, "prompt": RunnablePassthrough()}
 
-    return retrieval | generate_mistral_rag_prompt()  | model_endpoint | output_parser
+    return retrieval | generate_mistral_rag_prompt() | model_endpoint | output_parser
