@@ -4,6 +4,7 @@ Gradio UI for Mistral 7B with RAG
 
 # Author: Bastien Pouessel
 
+import os
 from typing import List
 
 import gradio as gr
@@ -44,6 +45,13 @@ def invoke_chain(message: str, history: List[str], file: gr.File = None) -> str:
     Returns:
         str: the response of the chain
     """
+    # Check if file is provided and exists
+    if file is not None and not os.path.exists(file.name):
+        return "Error: File not found."
+
+    if file is not None and not file.name.endswith(".pdf"):
+        return "Error: File is not a pdf."
+
     chain = initialize_chain(file)
     return chain.invoke(message)
 
